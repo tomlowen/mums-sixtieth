@@ -4,17 +4,16 @@ import { allWords } from "./words";
 import Keyboard from "./Keyboard.vue";
 import { LetterState } from "./types";
 
-const burger = new URL('./images/burger.jpg', import.meta.url).href;
-const gamesBottom = new URL('./images/games-bottom.png', import.meta.url).href;
-const gamesBurger = new URL('./images/games-burger.png', import.meta.url).href;
-const gamesMiddle = new URL('./images/games-middle.png', import.meta.url).href;
-const gamesOther = new URL('./images/games-other.png', import.meta.url).href;
-const gamesSubscribe = new URL('./images/games-subscribe.png', import.meta.url).href;
-const gamesTop = new URL('./images/games-top.png', import.meta.url).href;
-const landing = new URL('./images/landing.png', import.meta.url).href;
-const rightIcons = new URL('./images/right-icons.jpg', import.meta.url).href;
-const wordle = new URL('./images/wordle.jpg', import.meta.url).href;
-
+import burger from './images/burger.jpg';
+import gamesBottom from './images/games-bottom.png';
+import gamesBurger from './images/games-burger.png';
+import gamesMiddle from './images/games-middle.png';
+import gamesOther from './images/games-other.png';
+import gamesSubscribe from './images/games-subscribe.png';
+import gamesTop from './images/games-top.png';
+import landing from './images/landing.png';
+import rightIcons from './images/right-icons.jpg';
+import wordle from './images/wordle.jpg';
 
 // Get word of the day
 const answer = "sixty";
