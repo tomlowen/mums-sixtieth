@@ -183,19 +183,19 @@ const showNyGames = ref(true);
   </Transition>
   <div v-if="showNyGames" id="ny-games">
     <div id="games-banner">
-      <img src="/games-burger.png" class="burger" />
-      <img src="/games-subscribe.png" class="icons" />
+      <img src="../public/games-burger.png" class="burger" />
+      <img src="../public/games-subscribe.png" class="icons" />
     </div>
     <div id="blue-banner">
-      <img src="/games-top.png" />
+      <img src="../public/games-top.png" />
     </div>
-    <img src="/games-middle.png" @click="showNyGames = false" style="cursor: pointer;" />
-    <img src="/games-other.png" />
-    <img src="/games-bottom.png" />
+    <img src="../public/games-middle.png" @click="showNyGames = false" style="cursor: pointer;" />
+    <img src="../public/games-other.png" />
+    <img src="../public/games-bottom.png" />
   </div>
   <div v-else-if="showLanding && !showNyGames" id="landing">
     <img
-      src="/landing.png"
+      src="../public/landing.png"
       id="landing-screenshot"
       @click="showLanding = false"
     />
@@ -203,9 +203,9 @@ const showNyGames = ref(true);
   </div>
   <div v-else>
     <div class="header">
-      <img src="/burger.jpg" class="burger" />
-      <img src="/wordle.jpg" id="wordle-icon" />
-      <img src="/right-icons.jpg" class="icons" />
+      <img src="../public/burger.jpg" class="burger" />
+      <img src="../public/wordle.jpg" id="wordle-icon" />
+      <img src="../public/right-icons.jpg" class="icons" />
     </div>
     <hr id="spacer" />
     <div id="board">
