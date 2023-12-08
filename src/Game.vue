@@ -4,6 +4,18 @@ import { allWords } from "./words";
 import Keyboard from "./Keyboard.vue";
 import { LetterState } from "./types";
 
+const burger = new URL('./images/burger.jpg', import.meta.url).href;
+const gamesBottom = new URL('./images/games-bottom.png', import.meta.url).href;
+const gamesBurger = new URL('./images/games-burger.png', import.meta.url).href;
+const gamesMiddle = new URL('./images/games-middle.png', import.meta.url).href;
+const gamesOther = new URL('./images/games-other.png', import.meta.url).href;
+const gamesSubscribe = new URL('./images/games-subscribe.png', import.meta.url).href;
+const gamesTop = new URL('./images/games-top.png', import.meta.url).href;
+const landing = new URL('./images/landing.png', import.meta.url).href;
+const rightIcons = new URL('./images/right-icons.jpg', import.meta.url).href;
+const wordle = new URL('./images/wordle.jpg', import.meta.url).href;
+
+
 // Get word of the day
 const answer = "sixty";
 
@@ -183,19 +195,19 @@ const showNyGames = ref(true);
   </Transition>
   <div v-if="showNyGames" id="ny-games">
     <div id="games-banner">
-      <img src="../public/games-burger.png" class="burger" />
-      <img src="../public/games-subscribe.png" class="icons" />
+      <img :src="gamesBurger" class="burger" />
+      <img :src="gamesSubscribe" class="icons" />
     </div>
     <div id="blue-banner">
-      <img src="../public/games-top.png" />
+      <img :src="gamesTop" />
     </div>
-    <img src="../public/games-middle.png" @click="showNyGames = false" style="cursor: pointer;" />
-    <img src="../public/games-other.png" />
-    <img src="../public/games-bottom.png" />
+    <img :src="gamesMiddle" @click="showNyGames = false" style="cursor: pointer;" />
+    <img :src="gamesOther" />
+    <img :src="gamesBottom" />
   </div>
   <div v-else-if="showLanding && !showNyGames" id="landing">
     <img
-      src="../public/landing.png"
+      :src="landing"
       id="landing-screenshot"
       @click="showLanding = false"
     />
@@ -203,9 +215,9 @@ const showNyGames = ref(true);
   </div>
   <div v-else>
     <div class="header">
-      <img src="../public/burger.jpg" class="burger" />
-      <img src="../public/wordle.jpg" id="wordle-icon" />
-      <img src="../public/right-icons.jpg" class="icons" />
+      <img :src="burger" class="burger" />
+      <img :src="wordle" id="wordle-icon" />
+      <img :src="rightIcons" class="icons" />
     </div>
     <hr id="spacer" />
     <div id="board">
