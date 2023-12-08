@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import Game from './Game.vue'
+import Game from './Game.vue';
 import './game.css'
 
 // resize for scaling the board size

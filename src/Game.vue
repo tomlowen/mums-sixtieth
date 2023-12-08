@@ -1,62 +1,62 @@
 <script setup lang="ts">
-import { onUnmounted } from 'vue'
-import { getWordOfTheDay, allWords } from './words'
-import Keyboard from './Keyboard.vue'
-import { LetterState } from './types'
+import { onUnmounted, ref } from "vue";
+import { allWords } from "./words";
+import Keyboard from "./Keyboard.vue";
+import { LetterState } from "./types";
 
 // Get word of the day
-const answer = getWordOfTheDay()
+const answer = "sixty";
 
 // Board state. Each tile is represented as { letter, state }
 const board = $ref(
   Array.from({ length: 6 }, () =>
     Array.from({ length: 5 }, () => ({
-      letter: '',
-      state: LetterState.INITIAL
+      letter: "",
+      state: LetterState.INITIAL,
     }))
   )
-)
+);
 
 // Current active row.
-let currentRowIndex = $ref(0)
-const currentRow = $computed(() => board[currentRowIndex])
+let currentRowIndex = $ref(0);
+const currentRow = $computed(() => board[currentRowIndex]);
 
 // Feedback state: message and shake
-let message = $ref('')
-let grid = $ref('')
-let shakeRowIndex = $ref(-1)
-let success = $ref(false)
+let message = $ref("");
+let grid = $ref("");
+let shakeRowIndex = $ref(-1);
+let success = $ref(false);
 
 // Keep track of revealed letters for the virtual keyboard
-const letterStates: Record<string, LetterState> = $ref({})
+const letterStates: Record<string, LetterState> = $ref({});
 
 // Handle keyboard input.
-let allowInput = true
+let allowInput = true;
 
-const onKeyup = (e: KeyboardEvent) => onKey(e.key)
+const onKeyup = (e: KeyboardEvent) => onKey(e.key);
 
-window.addEventListener('keyup', onKeyup)
+window.addEventListener("keyup", onKeyup);
 
 onUnmounted(() => {
-  window.removeEventListener('keyup', onKeyup)
-})
+  window.removeEventListener("keyup", onKeyup);
+});
 
 function onKey(key: string) {
-  if (!allowInput) return
+  if (!allowInput) return;
   if (/^[a-zA-Z]$/.test(key)) {
-    fillTile(key.toLowerCase())
-  } else if (key === 'Backspace') {
-    clearTile()
-  } else if (key === 'Enter') {
-    completeRow()
+    fillTile(key.toLowerCase());
+  } else if (key === "Backspace") {
+    clearTile();
+  } else if (key === "Enter") {
+    completeRow();
   }
 }
 
 function fillTile(letter: string) {
   for (const tile of currentRow) {
     if (!tile.letter) {
-      tile.letter = letter
-      break
+      tile.letter = letter;
+      break;
     }
   }
 }
@@ -64,111 +64,114 @@ function fillTile(letter: string) {
 function clearTile() {
   for (const tile of [...currentRow].reverse()) {
     if (tile.letter) {
-      tile.letter = ''
-      break
+      tile.letter = "";
+      break;
     }
   }
 }
 
 function completeRow() {
   if (currentRow.every((tile) => tile.letter)) {
-    const guess = currentRow.map((tile) => tile.letter).join('')
+    const guess = currentRow.map((tile) => tile.letter).join("");
     if (!allWords.includes(guess) && guess !== answer) {
-      shake()
-      showMessage(`Not in word list`)
-      return
+      shake();
+      showMessage(`Not in word list`);
+      return;
     }
 
-    const answerLetters: (string | null)[] = answer.split('')
+    const answerLetters: (string | null)[] = answer.split("");
     // first pass: mark correct ones
     currentRow.forEach((tile, i) => {
       if (answerLetters[i] === tile.letter) {
-        tile.state = letterStates[tile.letter] = LetterState.CORRECT
-        answerLetters[i] = null
+        tile.state = letterStates[tile.letter] = LetterState.CORRECT;
+        answerLetters[i] = null;
       }
-    })
+    });
     // second pass: mark the present
     currentRow.forEach((tile) => {
       if (!tile.state && answerLetters.includes(tile.letter)) {
-        tile.state = LetterState.PRESENT
-        answerLetters[answerLetters.indexOf(tile.letter)] = null
+        tile.state = LetterState.PRESENT;
+        answerLetters[answerLetters.indexOf(tile.letter)] = null;
         if (!letterStates[tile.letter]) {
-          letterStates[tile.letter] = LetterState.PRESENT
+          letterStates[tile.letter] = LetterState.PRESENT;
         }
       }
-    })
+    });
     // 3rd pass: mark absent
     currentRow.forEach((tile) => {
       if (!tile.state) {
-        tile.state = LetterState.ABSENT
+        tile.state = LetterState.ABSENT;
         if (!letterStates[tile.letter]) {
-          letterStates[tile.letter] = LetterState.ABSENT
+          letterStates[tile.letter] = LetterState.ABSENT;
         }
       }
-    })
+    });
 
-    allowInput = false
+    allowInput = false;
     if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
       // yay!
       setTimeout(() => {
-        grid = genResultGrid()
+        grid = genResultGrid();
         showMessage(
-          ['Genius', 'Magnificent', 'Impressive', 'Splendid', 'Great', 'Phew'][
+          ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"][
             currentRowIndex
           ],
           -1
-        )
-        success = true
-      }, 1600)
+        );
+        success = true;
+      }, 1600);
     } else if (currentRowIndex < board.length - 1) {
       // go the next row
-      currentRowIndex++
+      currentRowIndex++;
       setTimeout(() => {
-        allowInput = true
-      }, 1600)
+        allowInput = true;
+      }, 1600);
     } else {
       // game over :(
       setTimeout(() => {
-        showMessage(answer.toUpperCase(), -1)
-      }, 1600)
+        showMessage(answer.toUpperCase(), -1);
+      }, 1600);
     }
   } else {
-    shake()
-    showMessage('Not enough letters')
+    shake();
+    showMessage("Not enough letters");
   }
 }
 
 function showMessage(msg: string, time = 1000) {
-  message = msg
+  message = msg;
   if (time > 0) {
     setTimeout(() => {
-      message = ''
-    }, time)
+      message = "";
+    }, time);
   }
 }
 
 function shake() {
-  shakeRowIndex = currentRowIndex
+  shakeRowIndex = currentRowIndex;
   setTimeout(() => {
-    shakeRowIndex = -1
-  }, 1000)
+    shakeRowIndex = -1;
+  }, 1000);
 }
 
 const icons = {
-  [LetterState.CORRECT]: '🟩',
-  [LetterState.PRESENT]: '🟨',
-  [LetterState.ABSENT]: '⬜',
-  [LetterState.INITIAL]: null
-}
+  [LetterState.CORRECT]: "🟩",
+  [LetterState.PRESENT]: "🟨",
+  [LetterState.ABSENT]: "⬜",
+  [LetterState.INITIAL]: null,
+};
 
 function genResultGrid() {
   return board
     .slice(0, currentRowIndex + 1)
     .map((row) => {
-      return row.map((tile) => icons[tile.state]).join('')
+      return row.map((tile) => icons[tile.state]).join("");
     })
-    .join('\n')
+    .join("\n");
 }
+
+const showLanding = ref(true);
+const showNyGames = ref(true);
 </script>
 
 <template>
@@ -178,44 +181,65 @@ function genResultGrid() {
       <pre v-if="grid">{{ grid }}</pre>
     </div>
   </Transition>
-  <header>
-    <h1>VVORDLE</h1>
-    <a
-      id="source-link"
-      href="https://github.com/yyx990803/vue-wordle"
-      target="_blank"
-      >Source</a
-    >
-  </header>
-  <div id="board">
-    <div
-      v-for="(row, index) in board"
-      :class="[
-        'row',
-        shakeRowIndex === index && 'shake',
-        success && currentRowIndex === index && 'jump'
-      ]"
-    >
+  <div v-if="showNyGames" id="ny-games">
+    <div id="games-banner">
+      <img src="/games-burger.png" class="burger" />
+      <img src="/games-subscribe.png" class="icons" />
+    </div>
+    <div id="blue-banner">
+      <img src="/games-top.png" />
+    </div>
+    <img src="/games-middle.png" @click="showNyGames = false" style="cursor: pointer;" />
+    <img src="/games-other.png" />
+    <img src="/games-bottom.png" />
+  </div>
+  <div v-else-if="showLanding && !showNyGames" id="landing">
+    <img
+      src="/landing.png"
+      id="landing-screenshot"
+      @click="showLanding = false"
+    />
+    <div id="button" @click="showLanding = false"></div>
+  </div>
+  <div v-else>
+    <div class="header">
+      <img src="/burger.jpg" class="burger" />
+      <img src="/wordle.jpg" id="wordle-icon" />
+      <img src="/right-icons.jpg" class="icons" />
+    </div>
+    <hr id="spacer" />
+    <div id="board">
       <div
-        v-for="(tile, index) in row"
-        :class="['tile', tile.letter && 'filled', tile.state && 'revealed']"
+        v-for="(row, index) in board"
+        :key="index"
+        :class="[
+          'row',
+          shakeRowIndex === index && 'shake',
+          success && currentRowIndex === index && 'jump',
+        ]"
       >
-        <div class="front" :style="{ transitionDelay: `${index * 300}ms` }">
-          {{ tile.letter }}
-        </div>
         <div
-          :class="['back', tile.state]"
-          :style="{
-            transitionDelay: `${index * 300}ms`,
-            animationDelay: `${index * 100}ms`
-          }"
+          v-for="(tile, index) in row"
+          :key="index"
+          :class="['tile', tile.letter && 'filled', tile.state && 'revealed']"
         >
-          {{ tile.letter }}
+          <div class="front" :style="{ transitionDelay: `${index * 300}ms` }">
+            {{ tile.letter }}
+          </div>
+          <div
+            :class="['back', tile.state]"
+            :style="{
+              transitionDelay: `${index * 300}ms`,
+              animationDelay: `${index * 100}ms`,
+            }"
+          >
+            {{ tile.letter }}
+          </div>
         </div>
       </div>
     </div>
+    <Keyboard @key="onKey" :letter-states="letterStates" />
   </div>
-  <Keyboard @key="onKey" :letter-states="letterStates" />
 </template>
 
 <style scoped>
@@ -224,11 +248,51 @@ function genResultGrid() {
   grid-template-rows: repeat(6, 1fr);
   grid-gap: 5px;
   padding: 10px;
+  padding-top: 100px;
   box-sizing: border-box;
-  --height: min(420px, calc(var(--vh, 100vh) - 310px));
+  --height: min(520px, calc(var(--vh, 80vh)));
   height: var(--height);
   width: min(350px, calc(var(--height) / 6 * 5));
   margin: 0px auto;
+}
+.header {
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+}
+#spacer {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  border-top: 1px solid #d3d6da;
+  width: 100vw;
+  z-index: 10;
+}
+#games-banner {
+  position: sticky;
+  top: 0;
+  height: 60px;
+  left: 0;
+  background-color: white;
+}
+#blue-banner {
+    background-color:#4d88f9;
+}
+.burger {
+  position: absolute;
+  left: 5px;
+}
+.icons {
+  position: absolute;
+  right: 5px;
+}
+#ny-games {
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .message {
   position: absolute;
@@ -370,5 +434,22 @@ function genResultGrid() {
   .tile {
     font-size: 3vh;
   }
+}
+
+#landing-screenshot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#button {
+  cursor: pointer;
+  height: 300px;
+  width: 100%;
+  position: absolute;
+  top: 300px;
+  left: 0px;
 }
 </style>
