@@ -4,19 +4,20 @@ import { allWords } from "./words";
 import Keyboard from "./Keyboard.vue";
 import { LetterState } from "./types";
 
-import burger from './images/burger.jpg';
-import gamesBottom from './images/games-bottom.png';
-import gamesBurger from './images/games-burger.png';
-import gamesMiddle from './images/games-middle.png';
-import gamesOther from './images/games-other.png';
-import gamesSubscribe from './images/games-subscribe.png';
-import gamesTop from './images/games-top.png';
-import landing from './images/landing.png';
-import rightIcons from './images/right-icons.jpg';
-import wordle from './images/wordle.jpg';
+import burger from "./files/burger.jpg";
+import gamesBottom from "./files/games-bottom.png";
+import gamesBurger from "./files/games-burger.png";
+import gamesMiddle from "./files/games-middle.png";
+import gamesOther from "./files/games-other.png";
+import gamesSubscribe from "./files/games-subscribe.png";
+import gamesTop from "./files/games-top.png";
+import landing from "./files/landing.png";
+import landingMobile from "./files/mobile-landing.png";
+import rightIcons from "./files/right-icons.jpg";
+import wordle from "./files/wordle.jpg";
 
 // Get word of the day
-const answer = "sixty";
+const answer = "elvis";
 
 // Board state. Each tile is represented as { letter, state }
 const board = $ref(
@@ -183,6 +184,8 @@ function genResultGrid() {
 
 const showLanding = ref(true);
 const showNyGames = ref(true);
+
+const mobile = window.innerWidth <= 600;
 </script>
 
 <template>
@@ -200,16 +203,26 @@ const showNyGames = ref(true);
     <div id="blue-banner">
       <img :src="gamesTop" />
     </div>
-    <img :src="gamesMiddle" @click="showNyGames = false" style="cursor: pointer;" />
+    <img
+      :src="gamesMiddle"
+      @click="showNyGames = false"
+      style="cursor: pointer"
+    />
     <img :src="gamesOther" />
     <img :src="gamesBottom" />
   </div>
-  <div v-else-if="showLanding && !showNyGames" id="landing">
-    <img
-      :src="landing"
-      id="landing-screenshot"
-      @click="showLanding = false"
-    />
+  <div v-else-if="showLanding && !showNyGames && !mobile" id="landing">
+    <img :src="landing" id="landing-screenshot" @click="showLanding = false" />
+    <div id="button" @click="showLanding = false"></div>
+  </div>
+  <div v-else-if="showLanding && !showNyGames && mobile" class="bg-colour-grey" style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0">
+    <div class="bg-colour-grey" style="width: 100%; height: 100%">
+      <img
+        :src="landingMobile"
+        id=""
+        @click="showLanding = false"
+      />
+    </div>
     <div id="button" @click="showLanding = false"></div>
   </div>
   <div v-else>
@@ -289,7 +302,7 @@ const showNyGames = ref(true);
   background-color: white;
 }
 #blue-banner {
-    background-color:#4d88f9;
+  background-color: #4d88f9;
 }
 .burger {
   position: absolute;
@@ -453,6 +466,10 @@ const showNyGames = ref(true);
   top: 0;
   height: 100%;
   width: 100%;
+}
+
+.bg-colour-grey {
+  background-color: #e3e3e1;
 }
 
 #button {
